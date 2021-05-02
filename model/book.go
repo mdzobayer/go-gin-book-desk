@@ -6,9 +6,9 @@ import (
 
 type Book struct {
 	ID          primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
-	Title       string             `json:"Title,omitempty"`
-	Description string             `json:"Description,omitempty"`
-	ISBN        string             `json:"ISBN,omitempty"`
+	Title       string             `json:"Title,omitempty" bson:"Title,omitempty"`
+	Description string             `json:"Description,omitempty" bson:"Description,omitempty"`
+	ISBN        string             `json:"ISBN,omitempty" bson:"ISBN,omitempty"`
 }
 
 func (b *Book) PreparePut() {
