@@ -109,8 +109,6 @@ func (b *Book) Put(dt model.Book) (*mongo.UpdateResult, error) {
 
 	filter := bson.D{bson.E{Key: "_id", Value: dt.ID}}
 
-	// var bm []byte
-
 	update := bson.D{bson.E{Key: "$set", Value: dt}}
 
 	opts := options.Update().SetUpsert(true)
