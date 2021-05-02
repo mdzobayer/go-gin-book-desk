@@ -10,6 +10,7 @@ import (
 type BookApi interface {
 	Find(string) model.Book
 	FindAll() []*model.Book
+	FindByFilter(ctx *gin.Context) []*model.Book
 	Save(ctx *gin.Context) *mongo.InsertOneResult
 	Update(ctx *gin.Context) *mongo.UpdateResult
 }
@@ -30,6 +31,14 @@ func (a *api) Find(itemId string) model.Book {
 
 func (a *api) FindAll() []*model.Book {
 	return a.service.FindAll()
+}
+
+func (a *api) FindByFilter(ctx *gin.Context) []*model.Book {
+	var filter model.Filter
+
+	ctx.BindJSON(&filter)
+
+	return a.service.FindByFilter(filter)
 }
 
 func (a *api) Save(ctx *gin.Context) *mongo.InsertOneResult {

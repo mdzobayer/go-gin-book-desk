@@ -42,6 +42,10 @@ func InitRoutes(s *gin.Engine) {
 
 		ctx.JSON(200, bookApi.Find(id))
 	})
+
+	s.POST("/booksbyfilter", func(ctx *gin.Context) {
+		ctx.JSON(200, bookApi.FindByFilter(ctx))
+	})
 }
 
 func PrepareDbConnection() (err error) {

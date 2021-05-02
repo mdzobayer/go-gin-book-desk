@@ -12,6 +12,7 @@ type BookService interface {
 	Upsert(book model.Book) *mongo.UpdateResult
 	Find(string) model.Book
 	FindAll() []*model.Book
+	FindByFilter(model.Filter) []*model.Book
 }
 
 type bookService struct {
@@ -41,6 +42,13 @@ func (bs *bookService) Find(itemId string) model.Book {
 func (bs *bookService) FindAll() []*model.Book {
 
 	books, _ := bs.dbBook.GetByFilter(bson.D{{}})
+
+	return books
+}
+
+func (bs *bookService) FindByFilter(filter model.Filter) []*model.Book {
+
+	books, _ := bs.dbBook.GetByFilter(bson.D{bson.E{Key: filter.FieldName, Value: filter.Value}})
 
 	return books
 }
