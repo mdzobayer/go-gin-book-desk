@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type Book struct {
@@ -100,4 +101,25 @@ func (b *Book) Delete(filter bson.D, updatedData model.Book) (*mongo.DeleteResul
 	}
 
 	return deleteResult, nil
+}
+
+func (b *Book) Put(dt model.Book) (*mongo.UpdateResult, error) {
+
+	dt.PreparePut()
+
+	filter := bson.D{bson.E{Key: "_id", Value: dt.ID}}
+
+	// var bm []byte
+
+	update := bson.D{bson.E{Key: "$set", Value: dt}}
+
+	opts := options.Update().SetUpsert(true)
+
+	updateResult, err := b.collection.UpdateOne(context.TODO(), filter, update, opts)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return updateResult, nil
 }

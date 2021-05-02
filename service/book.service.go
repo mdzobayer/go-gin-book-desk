@@ -8,7 +8,8 @@ import (
 )
 
 type BookService interface {
-	Save(model.Book) interface{}
+	Save(model.Book) *mongo.InsertOneResult
+	Upsert(book model.Book) *mongo.UpdateResult
 	Find(string) model.Book
 	FindAll() []*model.Book
 }
@@ -23,11 +24,11 @@ func New(database *mongo.Database) BookService {
 	}
 }
 
-func (bs *bookService) Save(book model.Book) interface{} {
+func (bs *bookService) Save(book model.Book) *mongo.InsertOneResult {
 
 	insertedBook, _ := bs.dbBook.Insert(book)
 
-	return insertedBook.InsertedID
+	return insertedBook
 }
 
 func (bs *bookService) Find(itemId string) model.Book {
@@ -42,4 +43,11 @@ func (bs *bookService) FindAll() []*model.Book {
 	books, _ := bs.dbBook.GetByFilter(bson.D{{}})
 
 	return books
+}
+
+func (bs *bookService) Upsert(book model.Book) *mongo.UpdateResult {
+
+	updateResult, _ := bs.dbBook.Put(book)
+
+	return updateResult
 }

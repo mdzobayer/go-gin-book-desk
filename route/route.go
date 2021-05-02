@@ -33,6 +33,10 @@ func InitRoutes(s *gin.Engine) {
 		ctx.JSON(200, bookApi.Save(ctx))
 	})
 
+	s.POST("/bookupdate", func(ctx *gin.Context) {
+		ctx.JSON(200, bookApi.Update(ctx))
+	})
+
 	s.GET("/book/:id", func(ctx *gin.Context) {
 		id := ctx.Param("id")
 
