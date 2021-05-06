@@ -6,6 +6,8 @@ import (
 	"log"
 
 	"github.com/book-desk/api"
+	"github.com/book-desk/config/constants"
+	"github.com/book-desk/jhandler"
 	"github.com/book-desk/service"
 	"github.com/gin-gonic/gin"
 
@@ -25,27 +27,16 @@ var (
 )
 
 func InitRoutes(s *gin.Engine) {
-	s.GET("/books", func(ctx *gin.Context) {
-		ctx.JSON(200, bookApi.FindAll())
-	})
 
-	s.POST("/book", func(ctx *gin.Context) {
-		ctx.JSON(200, bookApi.Save(ctx))
-	})
+	routeConfigs := jhandler.GetRoutesConfig(bookApi)
 
-	s.POST("/bookupdate", func(ctx *gin.Context) {
-		ctx.JSON(200, bookApi.Update(ctx))
-	})
-
-	s.GET("/book/:id", func(ctx *gin.Context) {
-		id := ctx.Param("id")
-
-		ctx.JSON(200, bookApi.Find(id))
-	})
-
-	s.POST("/booksbyfilter", func(ctx *gin.Context) {
-		ctx.JSON(200, bookApi.FindByFilter(ctx))
-	})
+	for _, data := range routeConfigs {
+		if data.Method == constants.GET {
+			s.GET(data.Path, data.Handler)
+		} else if data.Method == constants.POST {
+			s.POST(data.Path, data.Handler)
+		}
+	}
 }
 
 func PrepareDbConnection() (err error) {
