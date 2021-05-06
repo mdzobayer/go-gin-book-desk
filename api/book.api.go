@@ -1,6 +1,8 @@
 package api
 
 import (
+	"fmt"
+
 	"github.com/book-desk/model"
 	"github.com/book-desk/service"
 	"github.com/gin-gonic/gin"
@@ -36,7 +38,12 @@ func (a *api) FindAll() []*model.Book {
 func (a *api) FindByFilter(ctx *gin.Context) []*model.Book {
 	var filter model.Filter
 
-	ctx.BindJSON(&filter)
+	err := ctx.BindJSON(&filter)
+
+	if err != nil {
+		_ = fmt.Errorf("\nError: FindByFilter %v", err)
+		return nil
+	}
 
 	return a.service.FindByFilter(filter)
 }
@@ -44,7 +51,13 @@ func (a *api) FindByFilter(ctx *gin.Context) []*model.Book {
 func (a *api) Save(ctx *gin.Context) *mongo.InsertOneResult {
 	var book model.Book
 
-	ctx.BindJSON(&book)
+	err := ctx.BindJSON(&book)
+
+	if err != nil {
+		_ = fmt.Errorf("\nError: Save %v", err)
+		return nil
+	}
+
 	insertResult := a.service.Save(book)
 
 	return insertResult
@@ -53,7 +66,13 @@ func (a *api) Save(ctx *gin.Context) *mongo.InsertOneResult {
 func (a *api) Update(ctx *gin.Context) *mongo.UpdateResult {
 	var book model.Book
 
-	ctx.BindJSON(&book)
+	err := ctx.BindJSON(&book)
+
+	if err != nil {
+		_ = fmt.Errorf("\nError: Update %v", err)
+		return nil
+	}
+
 	updateResult := a.service.Upsert(book)
 
 	return updateResult
