@@ -2,6 +2,7 @@ package dbq
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/book-desk/model"
@@ -38,7 +39,8 @@ func (b *Book) GetById(itemId string) (book model.Book) {
 	).Decode(&book)
 
 	if err != nil {
-		log.Fatal(err)
+		_ = fmt.Errorf("\nError: FindById %v", err)
+		return model.Book{}
 	}
 
 	return book
