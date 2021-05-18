@@ -8,8 +8,8 @@ import (
 )
 
 type BookService interface {
-	Save(model.Book) *mongo.InsertOneResult
-	Upsert(book model.Book) *mongo.UpdateResult
+	Save(model.Book) interface{}
+	Upsert(book model.Book) interface{}
 	Find(string) model.Book
 	FindAll() []*model.Book
 	FindByFilter(model.Filter) []*model.Book
@@ -25,7 +25,7 @@ func New(database *mongo.Database) BookService {
 	}
 }
 
-func (bs *bookService) Save(book model.Book) *mongo.InsertOneResult {
+func (bs *bookService) Save(book model.Book) interface{} {
 
 	insertedBook, _ := bs.dbBook.Insert(book)
 
@@ -53,7 +53,7 @@ func (bs *bookService) FindByFilter(filter model.Filter) []*model.Book {
 	return books
 }
 
-func (bs *bookService) Upsert(book model.Book) *mongo.UpdateResult {
+func (bs *bookService) Upsert(book model.Book) interface{} {
 
 	updateResult, _ := bs.dbBook.Put(book)
 

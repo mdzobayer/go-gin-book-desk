@@ -71,7 +71,7 @@ func (b *Book) GetByFilter(filter bson.D) ([]*model.Book, error) {
 	return books, nil
 }
 
-func (b *Book) Insert(dt model.Book) (*mongo.InsertOneResult, error) {
+func (b *Book) Insert(dt model.Book) (interface{}, error) {
 
 	insertOneResult, err := b.collection.InsertOne(
 		context.TODO(),
@@ -82,10 +82,10 @@ func (b *Book) Insert(dt model.Book) (*mongo.InsertOneResult, error) {
 		return nil, err
 	}
 
-	return insertOneResult, nil
+	return insertOneResult.InsertedID, nil
 }
 
-func (b *Book) Update(filter bson.D, updatedData model.Book) (*mongo.UpdateResult, error) {
+func (b *Book) Update(filter bson.D, updatedData model.Book) (interface{}, error) {
 	updateResult, err := b.collection.UpdateOne(context.TODO(), filter, updatedData)
 
 	if err != nil {
@@ -95,7 +95,7 @@ func (b *Book) Update(filter bson.D, updatedData model.Book) (*mongo.UpdateResul
 	return updateResult, nil
 }
 
-func (b *Book) Delete(filter bson.D, updatedData model.Book) (*mongo.DeleteResult, error) {
+func (b *Book) Delete(filter bson.D, updatedData model.Book) (interface{}, error) {
 	deleteResult, err := b.collection.DeleteOne(context.TODO(), filter)
 
 	if err != nil {
@@ -105,7 +105,7 @@ func (b *Book) Delete(filter bson.D, updatedData model.Book) (*mongo.DeleteResul
 	return deleteResult, nil
 }
 
-func (b *Book) Put(dt model.Book) (*mongo.UpdateResult, error) {
+func (b *Book) Put(dt model.Book) (interface{}, error) {
 
 	dt.PreparePut()
 

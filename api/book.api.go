@@ -6,15 +6,14 @@ import (
 	"github.com/book-desk/model"
 	"github.com/book-desk/service"
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type BookApi interface {
 	Find(string) model.Book
 	FindAll() []*model.Book
 	FindByFilter(ctx *gin.Context) []*model.Book
-	Save(ctx *gin.Context) *mongo.InsertOneResult
-	Update(ctx *gin.Context) *mongo.UpdateResult
+	Save(ctx *gin.Context) interface{}
+	Update(ctx *gin.Context) interface{}
 }
 
 type api struct {
@@ -48,7 +47,7 @@ func (a *api) FindByFilter(ctx *gin.Context) []*model.Book {
 	return a.service.FindByFilter(filter)
 }
 
-func (a *api) Save(ctx *gin.Context) *mongo.InsertOneResult {
+func (a *api) Save(ctx *gin.Context) interface{} {
 	var book model.Book
 
 	err := ctx.BindJSON(&book)
@@ -63,7 +62,7 @@ func (a *api) Save(ctx *gin.Context) *mongo.InsertOneResult {
 	return insertResult
 }
 
-func (a *api) Update(ctx *gin.Context) *mongo.UpdateResult {
+func (a *api) Update(ctx *gin.Context) interface{} {
 	var book model.Book
 
 	err := ctx.BindJSON(&book)
