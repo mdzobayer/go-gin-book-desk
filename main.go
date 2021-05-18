@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	"github.com/book-desk/middlewares"
 	"github.com/book-desk/route"
 	"github.com/gin-gonic/gin"
 )
@@ -12,7 +13,14 @@ func main() {
 	err := route.PrepareDbConnection()
 
 	if err == nil {
-		server := gin.Default()
+		server := gin.New()
+
+		server.Use(
+			gin.Recovery(),
+			// gin.Logger(), // gin Default Logger
+			middlewares.Logger(),
+		)
+
 		route.InitRoutes(server)
 		server.Run(":8080")
 	} else {
