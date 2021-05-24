@@ -8,6 +8,7 @@ import (
 	"github.com/book-desk/api"
 	"github.com/book-desk/config/constants"
 	"github.com/book-desk/jhandler"
+	"github.com/book-desk/middlewares"
 	"github.com/book-desk/service"
 	"github.com/gin-gonic/gin"
 
@@ -26,15 +27,23 @@ var (
 	bookApi     api.BookApi
 )
 
-func InitRoutes(s *gin.Engine) {
+func InitRoutesGroups(s *gin.Engine) {
 
 	routeConfigs := jhandler.GetRoutesConfig(bookApi)
 
+	// log write
+
+	s.Use(middlewares.Logger())
+
+	commandRoutes := s.Group("/command", middlewares.BasicAuth())
+
+	queryRoutes := s.Group("/query")
+
 	for _, data := range routeConfigs {
 		if data.Method == constants.GET {
-			s.GET(data.Path, data.Handler)
+			queryRoutes.GET(data.Path, data.Handler)
 		} else if data.Method == constants.POST {
-			s.POST(data.Path, data.Handler)
+			commandRoutes.POST(data.Path, data.Handler)
 		}
 	}
 }
