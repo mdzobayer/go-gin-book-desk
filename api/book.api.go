@@ -12,7 +12,7 @@ type BookApi interface {
 	Find(string) model.Book
 	FindAll() []*model.Book
 	FindByFilter(ctx *gin.Context) []*model.Book
-	Save(ctx *gin.Context) interface{}
+	Save(ctx *gin.Context) (interface{}, error)
 	Update(ctx *gin.Context) interface{}
 }
 
@@ -47,19 +47,24 @@ func (a *api) FindByFilter(ctx *gin.Context) []*model.Book {
 	return a.service.FindByFilter(filter)
 }
 
-func (a *api) Save(ctx *gin.Context) interface{} {
+func (a *api) Save(ctx *gin.Context) (insertResult interface{}, err error) {
 	var book model.Book
 
-	err := ctx.BindJSON(&book)
+	err = ctx.BindJSON(&book)
 
 	if err != nil {
-		_ = fmt.Errorf("\nError: Save %v", err)
-		return nil
+		_ = fmt.Errorf("\nError: BindJSON %v", err)
+		return nil, err
 	}
 
-	insertResult := a.service.Save(book)
+	insertResult, err = a.service.Save(book)
 
-	return insertResult
+	if err != nil {
+		_ = fmt.Errorf("\nError: Insert error %v", err)
+		return nil, err
+	}
+
+	return insertResult, nil
 }
 
 func (a *api) Update(ctx *gin.Context) interface{} {

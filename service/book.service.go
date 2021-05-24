@@ -8,7 +8,7 @@ import (
 )
 
 type BookService interface {
-	Save(model.Book) interface{}
+	Save(model.Book) (interface{}, error)
 	Upsert(book model.Book) interface{}
 	Find(string) model.Book
 	FindAll() []*model.Book
@@ -25,11 +25,15 @@ func New(database *mongo.Database) BookService {
 	}
 }
 
-func (bs *bookService) Save(book model.Book) interface{} {
+func (bs *bookService) Save(book model.Book) (interface{}, error) {
 
-	insertedBook, _ := bs.dbBook.Insert(book)
+	insertedBook, err := bs.dbBook.Insert(book)
 
-	return insertedBook
+	if err != nil {
+		return nil, err
+	}
+
+	return insertedBook, nil
 }
 
 func (bs *bookService) Find(itemId string) model.Book {

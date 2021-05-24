@@ -1,6 +1,8 @@
 package jhandler
 
 import (
+	"net/http"
+
 	"github.com/book-desk/api"
 	"github.com/book-desk/config/constants"
 	"github.com/gin-gonic/gin"
@@ -40,7 +42,17 @@ func GetRoutesConfig(bookApi api.BookApi) []RouteConfig {
 		Method: constants.POST,
 		Path:   "/book",
 		Handler: func(ctx *gin.Context) {
-			ctx.JSON(200, bookApi.Save(ctx))
+
+			result, err := bookApi.Save(ctx)
+
+			if err != nil {
+				ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			} else {
+				ctx.JSON(http.StatusOK, gin.H{
+					"message": "Book input is Valid",
+					"result":  result,
+				})
+			}
 		},
 	})
 
